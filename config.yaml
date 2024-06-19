@@ -1,0 +1,11 @@
+data:
+  train: 
+    path: 
+    max_samples: 
+  val: 
+    path: 
+    max_samples: 
+
+model:
+  block_size: 8
+  batch_size: 4
