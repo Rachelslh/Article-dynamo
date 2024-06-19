@@ -4,6 +4,7 @@ from torch.utils.data import TensorDataset
 
 logger = logging.getLogger(__name__)
 
+#TODO Change this to word tokenizer instead
 class TokenDataset(TensorDataset):
     def __init__(self, path: str, block_size: int, max_num_samples: int) -> None:
         with open(path, 'r') as f:
