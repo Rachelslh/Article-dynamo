@@ -1,0 +1,36 @@
+Introduction To Neural Networks - Part 2
+Game Changers: MLPs & Backpropagation
+
+In the previous article, we  reviewed the earlier models that helped initiate what Artificial Neural Networks (ANNs) represent today. Check it out if you haven't read it yet. For those who did, you certainly know that non-linearity was still a problem to be overcome. Fortunately, this article tells you all about it, so stick around.
+Introduction To Neural Networks - Part 1
+Comprehension of The Earliest Models: Perceptron & Adalinetowardsdatascience.com
+Multi-layer Perceptron (MLP)…Vanilla NNs
+This introduces the so-called "Layers". Technically, a layer is a container that receives data, applies a linear/nonlinear transform function to it, and shifts it to the next layer.
+There will be "Layers" everywhere, just bear with me…
+Strictly speaking, a layer holds a set of perceptrons (excluding the input layer), each one is connected to all the perceptrons present in the next layer to allow data flow, where the data is the set of outputs of all neurons present in that particular layer. 
+There is no need for a model description here for as the name MLP speaks for itself, it is indeed a neural network composed of at least three layers where:
+First layer: The input layer. Provides the features x₁…xₙ per sample x.
+Last layer:  The output layer.
+In-between layers: Hidden layers, the simplest architecture contains one hidden layer, the model will then be called a Shallow Neural Network. Otherwise, it's a Deep NN.
+
+Although you might think that a perceptron in an MLP network is the same earlier model discussed in the last article. Well, it is not. The only difference here lies in the choice of the activation function which is no longer linked to a threshold function, but even nonlinear ones are now allowed, which allows us to finally move from the classification of linearly separable data to non-separable ones. Note that neurons in the same layer must share the same activation function;
+Activation Functions, Mathematical Gates
+A crucial step in determining the MLP model that will best suit your data and hypothesis is the choice of the activation function because its output will determine for the neuron whether it should fire or not!
+Activation functions differ depending on the type:
+Binary step functions: Threshold-based functions as seen before in Perceptron and Adaline models. Limited to the classification of two categorical outputs only.
+Linear functions: The output is proportional to the input due to the shape of linear functions that is Y = aX+b where a and b are constants, X and Y are the input and output respectively. Even if the use of this type of function has shown a significant improvement in Adaline, it remains less efficient and even unreliable compared to nonlinear functions in MLP models.
+Nonlinear functions: Widely used in MLPs and deep learning models, allowing variation in output (not proportional to input). This type of function offers several options, the most used are Sigmoid and Rectified Linear Unit (Relu). Take a look at this for more details on nonlinear functions.
+
+AI requires the use of nonlinear functions, why?
+Suppose you have a minimalist MLP architecture made up of 3 layers including input and output layers. The recurring use of the linear type as an activation function for the whole model causes the output layer to be a linear function of the first layer. Regardless of the number of hidden layers, the activation function will no longer have an impact on the final results.
+As you walk through the model, layer by layer, you will notice that the numbers resulting from a linear function will continue to increase, making the calculus much more complex. This case is irreproducible when using a nonlinear activation function because it will reduce the value of the outcome to a probability before moving it to the next layer.
+
+Forward pass
+Perceptron, Adaline, MLPs…These are all feedforward models as explained in the previous article. Therefore, the forward pass of an MLP is quite similar to what you have seen before but more of a multiplex algorithm.
+
+As shown above, each perceptron is related to all the nodes present in the preceding and the following layer, this is why the weight notation is: 
+As for the learning technique, Perceptron uses Rosenblatt's learning rule and Adaline uses the Delta rule, Whereas MLPs adopt a supervised learning algorithm called "Backpropagation".
+
+Back-propagation
+A huge breakthrough in the history of neural networks, first introduced in 1986 by Seppo Linnainmaa, its name is representative of its working principle, which is the backward propagation of errors through layers.
+This valued algorithm   uses heavy differential calculus of the cost/error function with respect to the neural network's weights. This can be seen as a generalization of the delta rule to multi-layer feed-forward neural networks.

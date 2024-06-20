@@ -1,10 +1,21 @@
-from torch.utils.data import random_split
+
+from omegaconf import OmegaConf
 
 from dataset import TokenDataset
+from model import TransformerDecoder
 
 
-train_dataset = TokenDataset(train_path, **config)
-val_dataset = TokenDataset(val_path, **config)
+config = OmegaConf.load("config.yaml")
+
+block_size = config['model']['block_size']
+train_dataset = TokenDataset(**config['data']['val'], block_size=block_size)
+val_dataset = TokenDataset(**config['data']['val'], block_size=block_size)
+
+'''
+Keeping this in case i decide to use one data source (.txt) for both train/val splits
 
 #n = int(split_perc * len(dataset))
 #train_dataset, val_dataset = random_split(dataset, (n, len(dataset) - n))
+'''
+
+model = TransformerDecoder(num_embeddings=train_dataset.vocab_size, embedding_dim=len(train_dataset.data))

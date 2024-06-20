@@ -1,10 +1,12 @@
 import logging
+
+import tiktoken
 import torch
 from torch.utils.data import TensorDataset
 
 logger = logging.getLogger(__name__)
 
-#TODO Change this to word tokenizer instead
+
 class TokenDataset(TensorDataset):
     def __init__(self, path: str, block_size: int, max_num_samples: int) -> None:
         with open(path, 'r') as f:
@@ -12,18 +14,24 @@ class TokenDataset(TensorDataset):
             
         torch.manual_seed(32)
         
-        logger.debug(f'length of dataset in characters: {len(self.raw_data)}')
-        self.chars = sorted(list(set(self.data)))
-        self.vocab_size = len(self.chars)
-        logger.debug(f"vocabulary: [{''.join(self.chars)}], size: {len(self.chars)}")
+        '''
+        Keeping this character-based code, in case i decide to roll back to chars instead of words/subwords.
         
-        ctoi = {c: i for i, c in enumerate(self.chars)}
-        self.encode = lambda s: [ctoi[c] for c in s]
+        #logger.debug(f'length of dataset in characters: {len(self.raw_data)}')
+        #self.chars = sorted(list(set(self.data)))
+        #self.vocab_size = len(self.chars)
+        #logger.debug(f"vocabulary: [{''.join(self.chars)}], size: {len(self.chars)}")
+        
+        #ctoi = {c: i for i, c in enumerate(self.chars)}
+        #self.encode = lambda s: [ctoi[c] for c in s]
     
-        itoc = {i: c for i, c in enumerate(self.chars)}
-        self.decode = lambda ints: ''.join([itoc[i] for i in ints])
+        #itoc = {i: c for i, c in enumerate(self.chars)}
+        #self.decode = lambda ints: ''.join([itoc[i] for i in ints])
+        '''
         
-        self.data = torch.tensor(self.encode(self.raw_data), dtype=torch.long)
+        self.encoding = tiktoken.get_encoding("gpt2")
+        self.vocab_size = self.encoding.n_vocab
+        self.data = torch.tensor(self.encoding.encode(self.raw_data))
         
         self.block_size = block_size
         self.max_num_samples = max_num_samples

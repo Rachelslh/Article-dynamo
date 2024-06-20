@@ -1,0 +1,129 @@
+Introduction To Neural Networks — Part 1
+Comprehension of The Earliest Models: Perceptron & Adaline
+
+What is the purpose of AI? Undoubtedly, it is to satisfy humankind’s hunger for creating human-like machines using different concepts, models, and techniques that are still getting improvements because the more you grow, the more your needs grow with you. The thought of simulating the human neuron or in other words creating an artificial one came in 1943 when Warren McCulloch and Walter Pitts modeled a simple neuron with electrical circuits; of-course this remains a very small glimpse on the history of artificial neural networks (ANN). If you want to know more then have a look at this.
+Motivation
+Over the years, AI knew very different models such as:
+Linear Regression with one variable/multiple variables
+Logistic Regression (classification) for one class/multi-class (one-vs-all technique)
+The common factor between all these mentioned models is their linearity, they can only be applied on linearly-separable data which was in fact one of the reasons that led to the creation of the neural network model, even if the earliest models were also linear classifiers (linear separators). Essentially it was and still is an algorithm that tries to mimic the brain which is by far the most powerful learning machine we know.
+
+Image by author
+So, before embarking on a journey of theories, let’s first understand what a feedforward neural network is;
+Feedforward NN: is an ANN wherein connections between the nodes (defined below) do not form a cycle. Different from its descendant recurrent neural networks (RNN)¹ (to be seen in future articles). The discussed models in this article are of type feedforward neural networks.
+Perceptron, The Root
+A Single-Layer Neural Network, a Linear Threshold Unit (LTU)/Gate (LTG), or even one neuron…call it whatever you want. The human neuron is a cell that receives electrical signals as inputs from other cells and outputs a signal based on that. This neuron does the exact same job using numerical values instead, this is when Math becomes your best friend!
+If you’re familiar with previously mentioned linear classifiers then you certainly know what a hypothesis function is, and what a decision boundary stands for. If not, let me introduce that quickly:
+Hypothesis: The function that best-describes the target known as Y.
+Decision Boundary: The best-fitting line, able to separate the data according to different class labels. The objective of each classifier is to find the decision boundary. Note that in binary classification, it’s a battle between True and False values i.e. ones and zeros.
+The model description is as follows:
+Inputs (X): Single sample x, a vector of features (attributes) x₁…xₙ
+Weights (W): Known as Θ (Theta) occasionally, a vector of parameters used to form connections between the different nodes, each weight is associated with an input xᵢ and shows how much influence it will have on the output.
+Bias (b): The node x₀, with a constant value of 1. Guarantees an activation of the neuron even when all inputs are null.
+Net Input (net): A dot product of weights and inputs, most of the time called z.
+
+Activation Function: Threshold function g(z), which makes the Perceptron a binary classifier (2 class label functions). The threshold is denoted as θ.
+
+In order to simplify g(z), we bring θ to the left side and consider it as the parameter w₀ associated with the bias, g(z) and z become:
+
+
+Output (Hypothesis): The result of the activation function, referred to as o(x) which is also the result of the hypothesis h(x).
+
+2D graphical illustration of the decision boundary — Image by author
+Perceptron Training Rule…Thank You Rosenblatt
+Let’s say the weights have been randomly initialized with small numbers, first sample x is running through the Perceptron model, the final output indicates a wrong class, what to do now? Is this AI?
+Luckily no, the model will learn at each iteration by improving w values so it can perform better using the following training/learning rule introduced by Rosenblatt in 1959:
+
+Learning Rate: A hyper-parameter² that controls how much to change the model in response to the estimated error each time the model weights are updated³. Traditional values are 0.1 or 0.01, always in the range of 0 and 1.
+
+Schematic of a Perceptron Classifier — Image by mlxtend
+Now, we are ready for the algorithm:
+- Random initialization of the weights, with small numbers
+- For each epoch:
+  - For each training sample xϵX:
+     .  Calculate output value o(x)
+     .  For i from 1..n:
+           wᵢ = wᵢ + ∆wᵢ
+This little monster is actually capable of representing various functions like And, Or, Nand, Nor, m-of-n…and the list goes on. But there are also lots of cases where it would fail such as XOR function because this one is not linearly-separable so the model wouldn’t be able to find the right decision boundary for it and would stay inside the loop infinitely using the same weights UNLESS you combine multiple Perceptrons, in other words, form a network of Perceptrons (can’t be generalized for all linearly non-separable data):
+
+If we assign a Perceptron to each logical operation shown above, we would end up training a complex one using three already trained models (And, Or and Not). For more details, check this out.
+The Perceptron model remains a computational version of the McCulloch-Pitts neuron mentioned above, it does certainly not satisfy the requirements of modern AI. That is why Adaline showed up!! (Not The Movie)
+The Era Of ADAptive LInear NEurons (Adaline)
+Same Structure As A Perceptron, Different Engine!
+Developed by Widrow and Hoff in 1960, considered as the ground-work of many sophisticated machine learning algorithms out there like logistic regression and Support Vector Machines (SVMs). Also a binary classifier and a linear separator.
+
+Activation Function: Linear function (identity function) of the net input z, denoted as o(x).
+The use of a threshold function g(z) is still needed.
+Unlike the Perceptron model, Adaline uses the continuous outcome z to learn the model weights. It’s much more effective than just utilizing predicted class labels.
+
+Schematic of Adaline Classifier — Image by mlxtend
+Adaline is similar to applying linear regression, the only difference is the use of a threshold function to convert the final output to a categorical one. The model uses the so-called cost function J(w) to estimate its error. The logic behind this is that the best-fitting line is defined as the line that minimizes the sum of squared errors (SSE). An error is perceived as the vertical deviation (residual) of a data point (one sample) from the fitted line (decision boundary). Some details might seem a bit blurry at this stage but will be further explained if you keep reading.
+
+Where X is the set of training samples, y(x) the target of a training sample x and o(x) is the continuous outcome (net input) z.
+The cost function is the sum of squared errors (convex), divided by 2 to facilitate the derivation process.
+
+2D graphical illustration of the vertical deviations in a linear regression model — Image by author
+Optimization…Here We Come
+We talked about the cost function and happen to mention the term minimization…Because the main reason error functions exist is to minimize the error hence their name!
+We recognize two main approaches to do that:
+Normal equations (closed-form solution)
+Standard/Stochastic gradient descent
+In this article, we‘ll be covering standard and stochastic gradient descent techniques. The procedure is straight forward, we calculate the value of the cost function at each iteration, make a step towards the global minimum of the function by looking for the tangent (partial derivative) at a specific point (w, J(w)), and update the weights using The Delta Rule. The loop stops when the global minimum (or local minimum) is reached (null derivative).
+Hmm..Delta Rule…What‘s up with that?
+Remember how in a Perceptron, the weights are updated thanks to Rosenblatt’s learning rule, Same premise in Adaline, but with a different formula.
+
+The minus sign indicates that we are taking a step in the opposite direction of the cost gradient as shown in the figure.
+Gradient Descent
+Now that we have reached the derivation part, you can skip it if you’re only interested in the resulting expression. Otherwise, the derivation process is as follows:
+
+The partial derivative of the cost function J(w) w.r.t each weight wᵢ (i ϵ 1..n) is:
+
+
+Gradient Descent — Image by mlxtend
+Standard Gradient Descent (GD)
+Known as Batch-GD mode for updating weights after processing the entire dataset, thus the step length is larger. However, it does not guarantee to find the global minimum and might converge easily to a local one if the cost function is non-convex.
+- Random initialization of the weights, with small numbers
+- For each epoch :
+  .  Calculate output value o(x)for each training sample xϵX
+  .  Calculate cost gradient ∇J
+  .  For i from 1..n :
+        wᵢ = wᵢ + ∆wᵢ
+Stochastic Gradient Descent (SGD)
+Also referred to as iterative/on-line mode for calculating the cost gradient and updating weights after each training sample which makes it more likely to find the global minimum even if the cost function is non-convex. Consequently, it takes more time to converge (reach the cost minimum).
+- Random initialization of the weights, with small numbers
+- For each epoch :
+  - For each batch training sample xϵX :
+     .  Calculate the output value o(x)
+     .  Calculate cost gradient ∇J
+     .  For i from 1..n :
+           wᵢ = wᵢ + ∆wᵢ
+Ways To Make GD Algorithms Converge Faster
+In large scale machine learning systems, it’s common to use Mini-Batches that is a compromise between GD and SGD. Produces a smoother convergence than SGD.
+When features differ by orders of magnitude, feature scaling provides numerical stability that is more likely to make GD converge faster. Various methods exist such as Min-Max Normalization and Standardization.
+Inspecting Learning Rate Values
+This section shows the importance of plotting learning curves when it comes to gradient descent algorithms. Sometimes, when GD does not converge well or maybe not at all, the problem might be in your chosen learning rate value.
+Too Large: The algorithm might overshoot the minimum and diverge as shown in the left graph.
+Too Small: might require too many epochs to converge (small steps) and can lead to a local minimum rather than the global.
+
+GD behavior with a large vs small learning rate
+Equation Of The Decision Boundary
+The equation of a separating line when you have a 2-dimensional input vector is of type:
+
+Where a is called the slope and b the y-intercept.
+First, set the net input z to 0;
+
+If you replace x₁, x₂, w₁, w₂ and w₀ by x, y, A, B, and C respectively, it would look like a standard equation of a line.
+
+The next step is to look for the x-intercept and the y-intercept, that way you get two points of the line so you can finally find the slope that is a.
+Summary
+The two initiating models of neural networks are :
+Perceptron
+Adaptive Linear Neuron (Adaline)
+Similarities:
+Linear classifier
+Binary classier
+The use of a threshold function
+Differences:
+The perceptron model uses its predicted class labels (categorical outputs) and the Perceptron learning rule to learn its coefficients (weights).
+On the other hand, Adaline uses its continuous outcome and the delta rule for more accuracy.
+If the GD algorithm is still stuck after several epochs, then you might need to consider tweaking your learning rate value for better performance.

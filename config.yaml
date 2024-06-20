@@ -1,10 +1,10 @@
 data:
   train: 
-    path: 
-    max_samples: 
+    path: data/train.txt
+    max_samples: 100
   val: 
-    path: 
-    max_samples: 
+    path: data/val.txt
+    max_num_samples: 100
 
 model:
   block_size: 8
