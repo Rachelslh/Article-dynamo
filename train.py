@@ -18,4 +18,4 @@ Keeping this in case i decide to use one data source (.txt) for both train/val s
 #train_dataset, val_dataset = random_split(dataset, (n, len(dataset) - n))
 '''
 
-model = TransformerDecoder(num_embeddings=train_dataset.vocab_size, embedding_dim=len(train_dataset.data))
+model = TransformerDecoder(num_embeddings=train_dataset.vocab_size, embedding_dim=config['model']['embed_dim'])
