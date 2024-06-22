@@ -65,10 +65,11 @@ class MultiHeadAttention(nn.Module):
         self.head_size = head_size
         self.block_Size = block_size
         
-        self.self_attention_blocks = [ScaledSelfAttentionHead(head_size, block_size, emb_d) for _ in range(heads)]
-    
+        self.self_attention_blocks = nn.ModuleList([ScaledSelfAttentionHead(head_size, block_size, emb_d) for _ in range(heads)])
+        self.ln_layer = nn.Linear(heads*head_size, emb_d)
+        
     def forward(self, inputs):
         outputs = [attention(inputs) for attention in self.self_attention_blocks]
-        
-        return torch.cat(outputs, -1)
+        out = torch.cat(outputs, -1)
+        return self.ln_layer(out)
         
