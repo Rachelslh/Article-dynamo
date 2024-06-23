@@ -1,0 +1,4 @@
+# training logs
+lightning_logs/
+# python cache
+*.pyc

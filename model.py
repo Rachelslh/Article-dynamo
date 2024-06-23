@@ -1,13 +1,13 @@
 import torch
 import torch.nn as nn
 from torch.nn.functional import softmax
-
+from lightning import LightningModule
 
 torch.manual_seed(32)
 
-class TransformerDecoder(nn.Module):
-    def __init__(self, num_tokens: int, embedding_dim: int, block_size: int, heads: int, head_size: int, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
+class TransformerDecoder(LightningModule):
+    def __init__(self, num_tokens: int, embedding_dim: int, block_size: int, heads: int, head_size: int) -> None:
+        super().__init__()
         self.block_size = block_size
         
         # Model layers
@@ -23,7 +23,7 @@ class TransformerDecoder(nn.Module):
         # tokens is of shape [B, T], targets shape [B, T]
         emb_input = self.embedding_table(tokens) # [B, T, emb_d]
         # Add positional encoding
-        pos_emb = self.positional_encodings_table((torch.arange(self.block_size))) # [T, emb_d]
+        pos_emb = self.positional_encodings_table((torch.arange(self.block_size, device='mps'))) # [T, emb_d]
         emb_input += pos_emb
         
         logits = self.linear_head(emb_input) # [B, T, C=num_tokens]
@@ -33,10 +33,14 @@ class TransformerDecoder(nn.Module):
         loss = self.loss_func(logits, targets)
         return logits, loss
     
-    def training_step(self, idx, targets):
-        logits, loss = self.forward(idx, targets)
-        return logits, loss
+    def training_step(self, batch, batch_idx):
+        x, y = batch
+        logits, loss = self.forward(x, y)
+        return loss
         
+    def configure_optimizers(self):
+        optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
+        return optimizer
 
 class ScaledSelfAttentionHead(nn.Module):
     def __init__(self, head_size: int, block_size: int, emb_d: int, *args, **kwargs) -> None:

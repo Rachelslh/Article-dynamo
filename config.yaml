@@ -7,7 +7,7 @@ data:
     max_num_samples: 100
 
 model:
-  embedding_dim: 384
+  embedding_dim: 50
   heads: 1
   head_size: 384
   block_size: 8

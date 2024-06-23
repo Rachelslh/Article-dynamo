@@ -1,6 +1,7 @@
 
 from omegaconf import OmegaConf
 from torch.utils.data import DataLoader
+import lightning
 
 from dataset import TokenDataset
 from model import TransformerDecoder
@@ -24,4 +25,6 @@ val_dataloader = DataLoader(train_dataset, **config['dataloader'])
 
 model = TransformerDecoder(num_tokens=train_dataset.vocab_size, **config['model'])
 
-model.training_step(*next(iter(train_dataloader)))
+# train the model (hint: here are some helpful Trainer arguments for rapid idea iteration)
+trainer = lightning.Trainer(limit_train_batches=100, max_epochs=1)
+trainer.fit(model=model, train_dataloaders=train_dataloader)
