@@ -19,27 +19,32 @@ class TransformerDecoder(nn.Module):
         self.loss_func = nn.CrossEntropyLoss()
         
     def forward(self, tokens, targets):
+        B, T = tokens.shape
         # tokens is of shape [B, T], targets shape [B, T]
         emb_input = self.embedding_table(tokens) # [B, T, emb_d]
         # Add positional encoding
         pos_emb = self.positional_encodings_table((torch.arange(self.block_size))) # [T, emb_d]
         emb_input += pos_emb
         
-        logits = self.linear_head(emb_input)
+        logits = self.linear_head(emb_input) # [B, T, C=num_tokens]
+        logits = logits.view(B * T, -1)
+        targets = targets.view(B * T,)
         # Apply cross-entropy loss
         loss = self.loss_func(logits, targets)
         return logits, loss
     
     def training_step(self, idx, targets):
         logits, loss = self.forward(idx, targets)
+        return logits, loss
         
 
 class ScaledSelfAttentionHead(nn.Module):
-    def __init__(self, head_size: int, block_size: int, emb_d: int) -> None:
+    def __init__(self, head_size: int, block_size: int, emb_d: int, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
         self.head_size = head_size
-        self.block_Size = block_size
+        self.block_size = block_size
         
-        self.register_buffer('tril', torch.tril(torch.ones((self.block_size, self.block_size))))
+        self.register_buffer('tril', torch.tril(torch.ones((block_size, block_size))))
         self.key = nn.Linear(emb_d, self.head_size)
         self.query = nn.Linear(emb_d, self.head_size)
         self.value = nn.Linear(emb_d, self.head_size)
@@ -60,7 +65,8 @@ class ScaledSelfAttentionHead(nn.Module):
     
     
 class MultiHeadAttention(nn.Module): 
-    def __init__(self, heads: int, head_size: int, block_size: int, emb_d: int) -> None:
+    def __init__(self, heads: int, head_size: int, block_size: int, emb_d: int, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
         self.heads = heads
         self.head_size = head_size
         self.block_Size = block_size

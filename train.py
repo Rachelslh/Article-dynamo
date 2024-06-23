@@ -1,5 +1,6 @@
 
 from omegaconf import OmegaConf
+from torch.utils.data import DataLoader
 
 from dataset import TokenDataset
 from model import TransformerDecoder
@@ -18,4 +19,9 @@ Keeping this in case i decide to use one data source (.txt) for both train/val s
 #train_dataset, val_dataset = random_split(dataset, (n, len(dataset) - n))
 '''
 
-model = TransformerDecoder(num_embeddings=train_dataset.vocab_size, embedding_dim=config['model']['embed_dim'])
+train_dataloader = DataLoader(train_dataset, **config['dataloader'])
+val_dataloader = DataLoader(train_dataset, **config['dataloader'])
+
+model = TransformerDecoder(num_tokens=train_dataset.vocab_size, **config['model'])
+
+model.training_step(*next(iter(train_dataloader)))
