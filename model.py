@@ -26,7 +26,9 @@ class TransformerDecoder(LightningModule):
         pos_emb = self.positional_encodings_table((torch.arange(self.block_size, device='mps'))) # [T, emb_d]
         emb_input += pos_emb
         
-        logits = self.linear_head(emb_input) # [B, T, C=num_tokens]
+        emb_output = self.attention_block(emb_input)
+        
+        logits = self.linear_head(emb_output) # [B, T, C=num_tokens]
         logits = logits.view(B * T, -1)
         targets = targets.view(B * T,)
         # Apply cross-entropy loss
@@ -36,6 +38,13 @@ class TransformerDecoder(LightningModule):
     def training_step(self, batch, batch_idx):
         x, y = batch
         logits, loss = self.forward(x, y)
+        self.log("train_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
+        return loss
+    
+    def validation_step(self, batch, batch_idx):
+        x, y = batch
+        _, loss = self.forward(x, y)
+        self.log("val_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
         return loss
         
     def configure_optimizers(self):

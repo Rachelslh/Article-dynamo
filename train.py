@@ -26,5 +26,5 @@ val_dataloader = DataLoader(train_dataset, **config['dataloader'])
 model = TransformerDecoder(num_tokens=train_dataset.vocab_size, **config['model'])
 
 # train the model (hint: here are some helpful Trainer arguments for rapid idea iteration)
-trainer = lightning.Trainer(limit_train_batches=100, max_epochs=1)
-trainer.fit(model=model, train_dataloaders=train_dataloader)
+trainer = lightning.Trainer(**config['trainer'])
+trainer.fit(model=model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
