@@ -17,7 +17,7 @@ This will output the generated text based on the initial input provided.
 
 The model is a decoder-only Transformer with the following key components:
 
-- Tokenization: Converts input text into tokens using OpenAI's ![Tiktoken](https://github.com/openai/tiktoken).
+- Tokenization: Converts input text into tokens using OpenAI's [Tiktoken](https://github.com/openai/tiktoken).
 - Embedding: Maps tokens to dense vectors of dimension d_model.
 - Decoder Layers: Stacked layers of self-attention and feed-forward networks.
 - Output Layer: Projects decoder outputs to vocabulary logits, followed by a softmax layer to obtain probabilities.
