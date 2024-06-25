@@ -17,17 +17,17 @@ This will output the generated text based on the initial input provided.
 
 The model is a decoder-only Transformer with the following key components:
 
-Tokenization: Converts input text into tokens using OpenAI's (Tiktoken)[https://github.com/openai/tiktoken].
-Embedding: Maps tokens to dense vectors of dimension d_model.
-Decoder Layers: Stacked layers of self-attention and feed-forward networks.
-Output Layer: Projects decoder outputs to vocabulary logits, followed by a softmax layer to obtain probabilities.
+- Tokenization: Converts input text into tokens using OpenAI's (Tiktoken)[https://github.com/openai/tiktoken].
+- Embedding: Maps tokens to dense vectors of dimension d_model.
+- Decoder Layers: Stacked layers of self-attention and feed-forward networks.
+- Output Layer: Projects decoder outputs to vocabulary logits, followed by a softmax layer to obtain probabilities.
 
 ### Key Hyperparameters
-d_model: Dimension of the embedding and hidden states.
-num_heads: Number of attention heads.
-d_ff: Dimension of the feed-forward network, hardcoded to 4 times the embedding dimension.
-
-Total: 15.2 M Trainable params
+- block_size: Length of one sequence.
+- d_model (embedding_dim): Dimension of the embedding and hidden states.
+- num_heads (heads): Number of attention heads.
+- d_k (head_size): Dimension of one attention head.
+- d_ff: Dimension of the feed-forward network, hardcoded to 4 times the embedding dimension.
 
 
 ```bash
@@ -42,3 +42,5 @@ Total: 15.2 M Trainable params
 --------------------------------------------------------------------------
 
 ```
+
+Total: 15.2 M Trainable params
