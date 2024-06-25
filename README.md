@@ -44,3 +44,38 @@ The model is a decoder-only Transformer with the following key components:
 ```
 
 Total: 15.2 M Trainable params
+
+### Training results
+
+Results using this configuration:
+
+```bash
+data:
+  train: 
+    path: data/train.txt
+    max_samples: 100
+  val: 
+    path: data/val.txt
+    max_samples: 100
+
+model:
+  embedding_dim: 100
+  heads: 2
+  head_size: 50
+  block_size: 8
+
+dataloader:
+  batch_size: 2
+  shuffle: True
+  num_workers: 0
+  #prefetch_factor: 2 # Should be >0 in case multiprocessing is enabled, i.e. num_workers > 0
+  drop_last: False
+
+trainer:
+  max_epochs: 100
+  num_sanity_val_steps: 1
+  log_every_n_steps: 25
+```
+
+
+!(Training vs validation loss)[assets/loss.jpg]
