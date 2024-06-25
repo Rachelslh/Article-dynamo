@@ -77,5 +77,6 @@ trainer:
   log_every_n_steps: 25
 ```
 
-
-<img src="assets/loss.jpg" alt="isolated" width="200"/>
+<p align="center">
+  <img src="assets/loss.jpg" width="70%" />
+</p>
