@@ -7,13 +7,13 @@ data:
     max_num_samples: 100
 
 model:
-  embedding_dim: 384
-  heads: 1
-  head_size: 384
+  embedding_dim: 100
+  heads: 2
+  head_size: 50
   block_size: 8
 
 dataloader:
-  batch_size: 4
+  batch_size: 2
   shuffle: True
   num_workers: 0
   #prefetch_factor: 2 # Should be >0 in case multiprocessing is enabled, i.e. num_workers > 0
