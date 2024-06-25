@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from torch.nn.functional import softmax
 from lightning import LightningModule
+import numpy as np
 
 torch.manual_seed(32)
 
@@ -18,6 +19,10 @@ class TransformerDecoder(LightningModule):
         self.linear_head = nn.Linear(embedding_dim, num_tokens)
         
         self.loss_func = nn.CrossEntropyLoss()
+        
+        self.training_step_outputs = []
+        self.validation_step_outputs = []
+        self.loss = {'train': [], 'val': []}
         
     def forward(self, tokens, targets):
         B, T = tokens.shape
@@ -40,15 +45,27 @@ class TransformerDecoder(LightningModule):
     def training_step(self, batch, batch_idx):
         x, y = batch
         logits, loss = self.forward(x, y)
+        self.training_step_outputs.append(loss.item())
         self.log("train_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
         return loss
+    
+    def on_train_epoch_end(self) -> None:
+        self.loss['train'].append(np.mean(self.training_step_outputs))
+        self.training_step_outputs.clear()
+        return super().on_train_epoch_end()
     
     def validation_step(self, batch, batch_idx):
         x, y = batch
         _, loss = self.forward(x, y)
+        self.validation_step_outputs.append(loss.item())
         self.log("val_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
         return loss
         
+    def on_val_epoch_end(self) -> None:
+        self.loss['val'].append(np.mean(self.validation_step_outputs))
+        self.validation_step_outputs.clear()
+        return super().on_train_epoch_end()
+    
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
         return optimizer

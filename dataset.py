@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class TokenDataset(TensorDataset):
-    def __init__(self, path: str, block_size: int, max_num_samples: int) -> None:
+    def __init__(self, path: str, block_size: int, max_samples: int) -> None:
         with open(path, 'r') as f:
             self.raw_data = f.read()
             
@@ -34,7 +34,7 @@ class TokenDataset(TensorDataset):
         self.data = torch.tensor(self.encoding.encode(self.raw_data))
         
         self.block_size = block_size
-        self.max_num_samples = max_num_samples
+        self.max_num_samples = max_samples
         
     
     def __getitem__(self, index):
