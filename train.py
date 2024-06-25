@@ -9,7 +9,7 @@ from dataset import TokenDataset
 from model import TransformerDecoder
 
 
-config = OmegaConf.load("config.yaml")
+config = OmegaConf.load("config/config.yaml")
 
 block_size = config['model']['block_size']
 train_dataset = TokenDataset(**config['data']['val'], block_size=block_size)
@@ -26,19 +26,19 @@ trainer.fit(model=model, train_dataloaders=train_dataloader, val_dataloaders=val
  
 num_samples = config['data']['train']['max_samples']
 batch_size = config['dataloader']['batch_size']
-epochs = np.arange(1, config['trainer']['max_epochs'] + 1)
+epochs_array = np.arange(1, config['trainer']['max_epochs'] + 1)
 
 # Plot and label the training and validation loss values
-plt.plot(epochs, model.loss['train'], label='Training Loss')
-plt.plot(epochs, model.loss['val'], label='Validation Loss') # Avoiding the sanity check val step here
+plt.plot(epochs_array, model.loss['train'], label='Training Loss')
+plt.plot(epochs_array, model.loss['val'][1:], label='Validation Loss') # Avoiding the sanity check val step here
  
 plt.title('Training and Validation Loss')
 plt.xlabel('Steps')
 plt.ylabel('Loss')
 
-plt.xticks(np.arange(0, epochs, 2))
+plt.xticks(np.arange(0, config['trainer']['max_epochs'], 2))
  
 plt.legend(loc='best')
 plt.show()
 
-plt.savefig('loss.jpg')
+plt.savefig('assets/loss.jpg')
