@@ -30,7 +30,7 @@ epochs = np.arange(1, config['trainer']['max_epochs'] + 1)
 
 # Plot and label the training and validation loss values
 plt.plot(epochs, model.loss['train'], label='Training Loss')
-plt.plot(epochs, model.loss['val'][1:], label='Validation Loss') # Avoiding the sanity check val step here
+plt.plot(epochs, model.loss['val'], label='Validation Loss') # Avoiding the sanity check val step here
  
 plt.title('Training and Validation Loss')
 plt.xlabel('Steps')

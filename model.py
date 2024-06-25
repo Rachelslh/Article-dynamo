@@ -61,10 +61,10 @@ class TransformerDecoder(LightningModule):
         self.log("val_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
         return loss
         
-    def on_val_epoch_end(self) -> None:
+    def on_validation_epoch_end(self) -> None:
         self.loss['val'].append(np.mean(self.validation_step_outputs))
         self.validation_step_outputs.clear()
-        return super().on_train_epoch_end()
+        return super().on_validation_epoch_end()
     
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
