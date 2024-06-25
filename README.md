@@ -23,7 +23,7 @@ The model is a decoder-only Transformer with the following key components:
 - Output Layer: Projects decoder outputs to vocabulary logits, followed by a softmax layer to obtain probabilities.
 
 ### Data
-- Training data: [An article about Neural networks 101](https://medium.com/towards-data-science/introduction-to-neural-networks-part-1-3bb27a8d314a)
+- Training data: [My own article about Neural networks 101](https://medium.com/towards-data-science/introduction-to-neural-networks-part-1-3bb27a8d314a)
 - Validation data: A draft article, not yet published on Medium, of my own creation as well. This article covers non-linear activation functions and backpropagation.
 
 ### Key Hyperparameters
