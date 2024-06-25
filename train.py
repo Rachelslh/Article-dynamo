@@ -35,10 +35,9 @@ plt.plot(epochs_array, model.loss['val'][1:], label='Validation Loss') # Avoidin
 plt.title('Training and Validation Loss')
 plt.xlabel('Steps')
 plt.ylabel('Loss')
-
-plt.xticks(np.arange(0, config['trainer']['max_epochs'], 2))
  
 plt.legend(loc='best')
-plt.show()
 
 plt.savefig('assets/loss.jpg')
+
+plt.show()
