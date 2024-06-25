@@ -78,4 +78,4 @@ trainer:
 ```
 
 
-![Training vs validation loss](assets/loss.jpg)
+<img src="assets/loss.jpg" alt="isolated" width="200"/>
