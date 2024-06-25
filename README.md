@@ -30,6 +30,7 @@ d_ff: Dimension of the feed-forward network, hardcoded to 4 times the embedding 
 Total: 15.2 M Trainable params
 
 
+```bash
   | Name                       | Type               | Params | Mode 
 --------------------------------------------------------------------------
 0 | embedding_table            | Embedding          | 5.0 M  | train
@@ -39,3 +40,5 @@ Total: 15.2 M Trainable params
 4 | linear_head                | Linear             | 5.1 M  | train
 5 | loss_func                  | CrossEntropyLoss   | 0      | train
 --------------------------------------------------------------------------
+
+```
