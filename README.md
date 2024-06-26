@@ -38,7 +38,7 @@ The model is a decoder-only Transformer with the following key components:
   | Name                       | Type               | Params | Mode 
 --------------------------------------------------------------------------
 0 | embedding_table            | Embedding          | 5.0 M  | train
-1 | positional_encodings_table | Embedding          | 5.0 M  | train
+1 | positional_encodings_table | Embedding          | 800    | train
 2 | attention_block            | MultiHeadAttention | 40.4 K | train
 3 | feed_forward               | FeedForwardNetwork | 80.5 K | train
 4 | linear_head                | Linear             | 5.1 M  | train
@@ -47,7 +47,7 @@ The model is a decoder-only Transformer with the following key components:
 
 ```
 
-Total: 15.2 M Trainable params
+Total: 10.2 M Trainable params
 
 ### Training results
 

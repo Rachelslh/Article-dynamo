@@ -13,7 +13,7 @@ class TransformerDecoder(LightningModule):
         
         # Model layers
         self.embedding_table = nn.Embedding(num_tokens, embedding_dim)
-        self.positional_encodings_table = nn.Embedding(num_tokens, embedding_dim)
+        self.positional_encodings_table = nn.Embedding(block_size, embedding_dim)
         self.attention_block = MultiHeadAttention(heads, head_size, block_size, embedding_dim)
         self.feed_forward = FeedForwardNetwork(embedding_dim, embedding_dim*4)
         self.linear_head = nn.Linear(embedding_dim, num_tokens)
