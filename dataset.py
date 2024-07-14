@@ -34,10 +34,11 @@ class TokenDataset(TensorDataset):
         self.data = torch.tensor(self.encoding.encode(self.raw_data))
         
         self.block_size = block_size
-        self.max_num_samples = max_samples
+        self.max_num_samples = len(self.data) // self.block_size
         
     
     def __getitem__(self, index):
+        index = index * self.block_size + 1
         if index > len(self.data)-self.block_size:
             index = torch.randint(high=len(self.data)-self.block_size, size=(1,)).item
         x = torch.tensor(self.data[index: index + self.block_size])

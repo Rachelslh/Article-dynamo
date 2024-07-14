@@ -16,7 +16,7 @@ class TransformerDecoder(LightningModule):
         self.positional_encodings_table = nn.Embedding(block_size, embedding_dim)
         self.attention_block = MultiHeadAttention(heads, head_size, block_size, embedding_dim)
         self.feed_forward = FeedForwardNetwork(embedding_dim, embedding_dim*4)
-        self.linear_head = nn.Linear(embedding_dim, num_tokens)
+        self.lm_head = nn.Linear(embedding_dim, num_tokens)
         
         self.loss_func = nn.CrossEntropyLoss()
         
@@ -24,8 +24,9 @@ class TransformerDecoder(LightningModule):
         self.validation_step_outputs = []
         self.loss = {'train': [], 'val': []}
         
-    def forward(self, tokens, targets):
+    def forward(self, tokens, targets=None):
         B, T = tokens.shape
+        #TODO add constraint T <= block size
         # tokens is of shape [B, T], targets shape [B, T]
         emb_input = self.embedding_table(tokens) # [B, T, emb_d]
         # Add positional encoding
@@ -35,11 +36,16 @@ class TransformerDecoder(LightningModule):
         att_output = self.attention_block(emb_input)
         ffwd_output = self.feed_forward(att_output)
         
-        logits = self.linear_head(ffwd_output) # [B, T, C=num_tokens]
-        logits = logits.view(B * T, -1)
-        targets = targets.view(B * T,)
-        # Apply cross-entropy loss
-        loss = self.loss_func(logits, targets)
+        logits = self.lm_head(ffwd_output) # [B, T, C=num_tokens]
+        if targets is not None:
+            logits = logits.view(B * T, -1)
+            targets = targets.view(B * T,)
+            # Apply cross-entropy loss
+            loss = self.loss_func(logits, targets)
+        else:
+            # Return only last time position
+            logits = logits[:, [-1], :]
+            
         return logits, loss
     
     def training_step(self, batch, batch_idx):
@@ -69,6 +75,14 @@ class TransformerDecoder(LightningModule):
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
         return optimizer
+    
+    @torch.no_grad()
+    def generate(self, pre_sequence, max_new_tokens, topk):
+        for _ in range(max_new_tokens):
+            pre_sequence = pre_sequence if pre_sequence.size(1) <= self.block_size else pre_sequence[:, -self.block_size:]
+            logits, _ = self(pre_sequence)
+            #TODO Add topK, softmax, appending new token to sequence
+            
 
 class ScaledSelfAttentionHead(nn.Module):
     def __init__(self, head_size: int, block_size: int, emb_d: int, *args, **kwargs) -> None:
