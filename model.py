@@ -82,8 +82,8 @@ class TransformerDecoder(LightningModule):
         self.to(device)
         self.eval()
         for _ in range(max_new_tokens):
-            sequence = sequence if sequence.size(1) <= self.block_size else sequence[:, -self.block_size:]
-            logits, _ = self(sequence)
+            pre_seq = sequence if sequence.size(1) <= self.block_size else sequence[:, -self.block_size:]
+            logits, _ = self(pre_seq)
             logits = logits[:, -1, :]
             values, _ = torch.topk(logits, min(top_k, logits.size(-1)))
             logits[logits < values[:, [-1]]] = float('-inf')
