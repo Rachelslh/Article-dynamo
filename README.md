@@ -79,4 +79,6 @@ trainer:
 After training for 100 epochs, the results of this gpt are still very random and do not make any sense semantically, however this is just an initial LM that i played with.
 Given the presequence: [Backprppagation is], the decoder generates these outputs:
 - Backpropagation is in last it should fire
-- Backpropagation is in 1986 a of hidden 
+- Backpropagation is in 1986 a of hidden
+
+Obviously, this needs more data and compute power to start making sense.
