@@ -1,10 +1,6 @@
-import logging
-
 import tiktoken
 import torch
 from torch.utils.data import TensorDataset
-
-logger = logging.getLogger(__name__)
 
 
 class TokenDataset(TensorDataset):
