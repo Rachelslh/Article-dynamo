@@ -38,7 +38,7 @@ plt.plot(epochs_array, model.loss['train'], label='Training Loss')
 plt.plot(epochs_array, model.loss['val'][1:], label='Validation Loss') # Avoiding the sanity check val step here
  
 plt.title('Training and Validation Loss')
-plt.xlabel('Steps')
+plt.xlabel('Epochs')
 plt.ylabel('Loss')
  
 plt.legend(loc='best')
