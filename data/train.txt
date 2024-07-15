@@ -127,3 +127,63 @@ Differences:
 The perceptron model uses its predicted class labels (categorical outputs) and the Perceptron learning rule to learn its coefficients (weights).
 On the other hand, Adaline uses its continuous outcome and the delta rule for more accuracy.
 If the GD algorithm is still stuck after several epochs, then you might need to consider tweaking your learning rate value for better performance.
+
+So here we are diving into the world of data mining this time, let’s begin with a small but informative definition;
+What is data mining ?!
+It’s technically a profound dive into datasets searching for some correlations, rules, anomaly detection and the list goes on. It’s a way to do some simple but effective machine learning instead of doing it the hard way like using regular neural networks or the ultimate complex version that is convolutions and recurrent neural networks (we will definitely go through that thoroughly in future articles).
+Data mining algorithms vary from one to another, each one has its own pros and cons, i will not go through that in this article but the first one you should focus on must be the classical Apriori Algorithm as it is the opening gate to the data mining world.
+But before going any further, there’s some special data mining vocabulary that we need to get familiar with :
+k-Itemsets: an itemset is just a set of items, the k refers to its order/length which means the number of items contained in the itemset.
+Transaction: it is a captured data, can refer to purchased items in a store. Note that the Apriori algorithm operates on datasets containing thousands or even millions of transactions.
+Association rule: an antecedent → consequent relationship between two itemsets :
+
+Implies the presence of the itemset Y (consequent) in the considered transaction given the itemset X (antecedent).
+Support: represents the popularity/frequency of an itemset, calculated this way :
+
+Confidence ( X → Y ): shows how much a rule is confident/true, in other words, the likelihood of having the consequent itemset in a transaction, calculated this way :
+
+A rule is called a strong rule if its confidence is equal to 1.
+Lift ( X → Y ): A measure of performance, indicates the quality of an association rule :
+
+MinSup: a user-specified variable that stands for the minimum support threshold for itemsets.
+MinConf: a user-specified variable that stands for the minimum confidence threshold for rules.
+Frequent itemset: whose support is equal or higher than the chosen minsup.
+Infrequent itemset: whose support is less than the chosen minsup.
+So…how does Apriori work?
+Starting with a historical glimpse, the algorithm was first proposed by the computer scientists Agrawal and Srikant in 1994, it proceeds this way :
+Generates possible combinations of k-itemsets (starts with k=1)
+Calculates support according to each itemset
+Eliminates infrequent itemsets
+Increments k and repeats the process
+Now, how to generate those itemsets ?!!
+For itemsets of length k=2, it is required to consider every possible combination of two items (no permutation is needed). For k > 2, two conditions must be satisfied first :
+The combined itemset must be formed of two frequent ones of length k-1, let’s call’em subsets.
+Both subsets must have the same prefix of length k-2
+If you think about it, these steps will just extend the previously found frequent itemsets, this is called the ‘bottom-up’ approach. It also proves that the Apriori algorithm respects the monotone property :
+All subsets of a frequent itemset must also be frequent.
+As well as the anti-monotone property :
+All super-sets of an infrequent itemset must also be infrequent.
+Okay, but wait a minute, this seems infinite !!
+No, luckily it is not infinite, the algorithm stops at a certain order k if :
+All the generated itemsets of length k are infrequent
+No found prefix of length k-2 in common which makes it impossible to generate new itemsets of length k
+Sure…it’s not rocket science! but how about an example to make this clearer?
+Here’s a small transaction table in binary format, the value of an item is 1 if it’s present in the considered transaction, otherwise it’s 0.
+
+Great…It’s time for some association rule mining!
+
+Once you reach this part, all there’s left to do is to take one frequent k-itemset at a time and generate all its possible rules using binary partitioning.
+If the 3-itemset {Almonds-Sugar-Milk} from the previous example were a frequent itemset, then the generated rules would look like :
+
+An overview of my Apriori simulation !! Using Python
+Dataset
+Of format csv (Comma-separated values), containing 7501 transactions of purchased items in a supermarket. Restructuring the dataset with the transaction encoder class from mlxtend library made the use and manipulation much easier. The resulting structure is occupying an area of ​​871.8 KB with 119 columns indexed respectively by food name from “Almonds” to “Zucchini”.
+Here’s an overview of the transaction table before and after :
+
+Implementing the algorithm
+I will not be posting any code fragments as it was a straight forward approach, the procedure is recursive, calls the responsible functions for the itemsets generation, support calculation, elimination, and association rule mining in the mentioned order.
+The execution took 177 seconds which seemed optimized and efficient thanks to Pandas and NumPy’s ability to perform quick element-wise operations. All found association rules were saved in an Html file for later use.
+Now, how about a tour in the supermarket? Using Dash by Plotly
+Finally, I got to use the previously saved rules to suggest food items based on what my basket contains. Here’s a quick preview :
+
+Feel free to check my source code here.

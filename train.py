@@ -5,6 +5,7 @@ import lightning
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+from lightning.pytorch.callbacks.early_stopping import EarlyStopping
 
 from dataset import TokenDataset
 from model import TransformerDecoder
@@ -21,7 +22,7 @@ val_dataloader = DataLoader(train_dataset, **config['dataloader'])
 
 model = TransformerDecoder(num_tokens=train_dataset.vocab_size, **config['model'])
 
-trainer = lightning.Trainer(**config['trainer'])
+trainer = lightning.Trainer(**config['trainer'], callbacks=[EarlyStopping(monitor="val_loss", mode="min", patience=5)])
 trainer.fit(model=model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
  
 sequences = model.generate(torch.tensor(train_dataset.encoding.encode('Backpropagation is'), device=config.model.device).repeat(2, 1), 5, 4, device=config.model.device)

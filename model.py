@@ -28,7 +28,7 @@ class TransformerDecoder(LightningModule):
         
     def forward(self, tokens, targets=None):
         B, T = tokens.shape
-        #TODO add constraint T <= block size
+        assert T <= self.block_size, "The sequence is longer than the permitted block size"
         # tokens is of shape [B, T], targets shape [B, T]
         emb_input = self.transformer.embedding_table(tokens) # [B, T, emb_d]
         # Add positional encoding

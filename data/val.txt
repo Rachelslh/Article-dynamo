@@ -34,3 +34,41 @@ As for the learning technique, Perceptron uses Rosenblatt's learning rule and Ad
 Back-propagation
 A huge breakthrough in the history of neural networks, first introduced in 1986 by Seppo Linnainmaa, its name is representative of its working principle, which is the backward propagation of errors through layers.
 This valued algorithm   uses heavy differential calculus of the cost/error function with respect to the neural network's weights. This can be seen as a generalization of the delta rule to multi-layer feed-forward neural networks.
+
+Let’s say, a group of friends went out to a restaurant and they all agreed on splitting the bill equally. The restaurant offers different kinds of meals when it comes to pricing: cheap/affordable ones as well as expensive ones. It is known that the more food costs the more it tastes better, but the satisfaction is not really worth the money you end up spending on the fancy meal when you’re on your own, this is where the dilemma comes into effect! Each one of them would like to take advantage of the situation and order the most expensive meal which justifies why this situation is also called The Unscrupulous Dinner.
+Theoretical Perspective
+The classical dinner’s dilemma model is:
+Non-cooperative: It’s all about self-serving first as explained above, each one would rather benefit from this dinner and order the priciest dish thinking that others will certainly help defray the cost by ordering the cheapest dish.
+Non-zero-sum: Knowing each player’s chosen strategy, the sum of all payoffs is not null because someone’s gain does not necessarily determine someone else’s loss, you’ll get that once you reach the payoff matrix part in this article.
+Symmetric game: The payoff of each player depends on their strategy choice (Cheap or Expensive) but not on their identity.
+Now let’s introduce some variables to represent our thoughts!
+α: The satisfaction of eating the expensive meal
+β: The satisfaction of eating the cheap meal
+γ: The cost of the expensive meal
+δ: The cost of the cheap meal
+It is noticeable that:
+
+The bill will be divided evenly among the entire group. Consequently, ordering an expensive meal seems more joyful than just regular food. Giving N the number of participants, we can translate the player’s ordering preferences this way:
+
+The equations (1) and (2) form the needed rules to come up with a good configuration of the tuple (α, β, γ, δ).
+For the utility part, we can either use probabilities which have been demonstrated in Research Gate’s article or we can use a much simpler method that is to define x as the cost of the other players’ meals also described here.
+Implementation & Simulation
+The game is symmetric and so calculating one player’s utility is sufficient to generate the entire payoff matrix. I have used the binary system because there are only 2 strategies to choose from, where:
+0: Cheap
+1: Expensive
+For N = 3, this is what we get in binary :
+
+We can now generate a table that assigns a payoff to each combination with the following configuration as an example:
+(α, β, γ, δ) = (10, 7, 9, 1)
+
+To fill the payoff matrix correctly, we need to look for a symmetrical relation by observing the different binary combinations, it might be tricky to find so feel free to check my source code.
+The payoff matrix should look like this where each element is a tuple of the form (player 1’s payoff, …, player N‘s payoff)
+
+Payoff Matrix For N = 3
+The code contains other algorithms for the following notions:
+Dominant Strategy: The ‘Expensive’ Strategy.
+Iterated Elimination of Strictly Dominated Strategies (IESDS): The case where everyone chooses the ‘Expensive’ strategy.
+Nash Equilibrium: Same result as the IESDS
+Pareto Optimal Point: The case where everyone chooses the ‘Cheap’ strategy.
+Security Level of both Strategies and players.
+Note: I have used Python and Dash by Plotly.
