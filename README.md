@@ -77,7 +77,5 @@ trainer:
 ### Test
 After training for 100 epochs, the results of this gpt are still very random and do not make any sense semantically, however this is just an initial LM that i played with.
 Given the presequence: [Backprppagation is], the decoder generates these outputs:
-- propagation is the andifiedron in
-- propagation is the and deep activation function
-
-Notice how the word [Backpropagation] is decoded to [propagation] in the outputs, most likely because the gpt2 encoder does not contain the word [Backpropagation].
+- Backpropagation is the andifiedron in
+- Backpropagation is the and deep activation function
