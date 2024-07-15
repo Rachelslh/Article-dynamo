@@ -12,31 +12,32 @@ The model is a decoder-only Transformer with the following key components:
 - Output Layer: Projects decoder outputs to vocabulary logits, followed by a softmax layer to obtain probabilities.
 
 ### Data
-- Training data: [My own article about Neural networks 101](https://medium.com/towards-data-science/introduction-to-neural-networks-part-1-3bb27a8d314a)
-- Validation data: A draft article, not yet published on Medium, of my own creation as well. This article covers non-linear activation functions and backpropagation.
+- Training data: 
+  - [My own article about Neural networks 101](https://medium.com/towards-data-science/introduction-to-neural-networks-part-1-3bb27a8d314a)
+  - [My own article about Apriori algorithm](https://medium.com/swlh/data-mining-a-focus-on-apriori-algorithm-b201d756c7ff)
+- Validation data: 
+  - A draft article, not yet published on Medium, of my own creation as well. This article covers non-linear activation functions and backpropagation.
+  - An article about a [game theory](https://medium.com/swlh/understand-diners-dilemma-in-detail-479c9c577ce9)
 
 ### Key Hyperparameters
 - block_size: Length of one sequence.
 - d_model (embedding_dim): Dimension of the embedding and hidden states.
+- num_layers (layers): Number of transformer blocks.
 - num_heads (heads): Number of attention heads.
 - d_k (head_size): Dimension of one attention head.
 - d_ff: Dimension of the feed-forward network, hardcoded to 4 times the embedding dimension.
 
 
 ```bash
-  | Name                       | Type               | Params | Mode 
---------------------------------------------------------------------------
-0 | embedding_table            | Embedding          | 5.0 M  | train
-1 | positional_encodings_table | Embedding          | 800    | train
-2 | attention_block            | MultiHeadAttention | 40.4 K | train
-3 | feed_forward               | FeedForwardNetwork | 80.5 K | train
-4 | linear_head                | Linear             | 5.1 M  | train
-5 | loss_func                  | CrossEntropyLoss   | 0      | train
---------------------------------------------------------------------------
-
+  | Name        | Type             | Params | Mode 
+---------------------------------------------------------
+0 | transformer | ModuleDict       | 123 M  | train
+1 | lm_head     | Linear           | 38.6 M | train
+2 | loss_func   | CrossEntropyLoss | 0      | train
+---------------------------------------------------------
 ```
 
-Total: 10.2 M Trainable params
+Total: 162 M Trainable params
 
 ### Training
 
@@ -77,5 +78,5 @@ trainer:
 ### Test
 After training for 100 epochs, the results of this gpt are still very random and do not make any sense semantically, however this is just an initial LM that i played with.
 Given the presequence: [Backprppagation is], the decoder generates these outputs:
-- Backpropagation is the andifiedron in
-- Backpropagation is the and deep activation function
+- Backpropagation is in last it should fire
+- Backpropagation is in 1986 a of hidden 

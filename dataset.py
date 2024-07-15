@@ -37,8 +37,8 @@ class TokenDataset(TensorDataset):
         index = index * self.block_size + 1
         if index > len(self.data)-self.block_size:
             index = torch.randint(high=len(self.data)-self.block_size, size=(1,)).item
-        x = torch.tensor(self.data[index: index + self.block_size])
-        y = torch.tensor(self.data[index+1: index + self.block_size + 1])
+        x = self.data[index: index + self.block_size]
+        y = self.data[index+1: index + self.block_size + 1]
         
         return x, y
     

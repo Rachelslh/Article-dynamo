@@ -13,23 +13,25 @@ from model import TransformerDecoder
 
 config = OmegaConf.load("config/config.yaml")
 
-block_size = config['model']['block_size']
-train_dataset = TokenDataset(**config['data']['val'], block_size=block_size)
-val_dataset = TokenDataset(**config['data']['val'], block_size=block_size)
+block_size = config.model.block_size
+train_dataset = TokenDataset(**config.data.val, block_size=block_size)
+val_dataset = TokenDataset(**config.data.val, block_size=block_size)
 
-train_dataloader = DataLoader(train_dataset, **config['dataloader'])
-val_dataloader = DataLoader(train_dataset, **config['dataloader'])
+train_dataloader = DataLoader(train_dataset, **config.dataloader)
+val_dataloader = DataLoader(train_dataset, **config.dataloader)
 
-model = TransformerDecoder(num_tokens=train_dataset.vocab_size, **config['model'])
+model = TransformerDecoder(num_tokens=train_dataset.vocab_size, **config.model)
 
-trainer = lightning.Trainer(**config['trainer'], callbacks=[EarlyStopping(monitor="val_loss", mode="min", patience=5)])
+early_stopping = EarlyStopping(monitor="val_loss", mode="min", patience=5)
+trainer = lightning.Trainer(**config.trainer, callbacks=[early_stopping])
 trainer.fit(model=model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
  
 sequences = model.generate(torch.tensor(train_dataset.encoding.encode('Backpropagation is'), device=config.model.device).repeat(2, 1), 5, 4, device=config.model.device)
 print(list(train_dataset.encoding.decode(l) for l in sequences.tolist()))
 
-batch_size = config['dataloader']['batch_size']
-epochs_array = np.arange(1, config['trainer']['max_epochs'] + 1)
+batch_size = config.dataloader.batch_size
+max_epochs = config.trainer.max_epochs
+epochs_array = np.arange(1, early_stopping.stopped_epoch + 2) if early_stopping.stopped_epoch < max_epochs - 1 else np.arange(1, max_epochs + 1)
 
 # Plot and label the training and validation loss values
 plt.plot(epochs_array, model.loss['train'], label='Training Loss')
