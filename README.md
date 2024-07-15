@@ -1,6 +1,6 @@
 # Article GPT
 
-Article GPT is a text generator based on a decoder-only Transformer architecture, trained on a collection of my own articles published on Medium. The model is designed to generate contextually relevant text in the style and content of the provided articles.
+Article GPT is a text generator based on a decoder-only Transformer architecture, trained on a collection of my own articles published on Medium using Pytorch Lightning. The model is designed to generate contextually relevant text in the style and content of the provided articles.
 
 ## Model Architecture
 
