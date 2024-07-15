@@ -1,6 +1,6 @@
-# Article Dynamo
+# Article GPT
 
-Article Dynamo is a text generator based on a decoder-only Transformer architecture, trained on a collection of my own articles published on Medium. The model is designed to generate contextually relevant text in the style and content of the provided articles.
+Article GPT is a text generator based on a decoder-only Transformer architecture, trained on a collection of my own articles published on Medium. The model is designed to generate contextually relevant text in the style and content of the provided articles.
 
 
 ## Text Generation
