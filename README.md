@@ -2,17 +2,6 @@
 
 Article GPT is a text generator based on a decoder-only Transformer architecture, trained on a collection of my own articles published on Medium. The model is designed to generate contextually relevant text in the style and content of the provided articles.
 
-
-## Text Generation
-
-To generate text using the pretrained model, you can use the generate_text.py script:
-
-```bash
-python generate_text.py --input "Your initial text here"
-```
-
-This will output the generated text based on the initial input provided.
-
 ## Model Architecture
 
 The model is a decoder-only Transformer with the following key components:
@@ -49,7 +38,7 @@ The model is a decoder-only Transformer with the following key components:
 
 Total: 10.2 M Trainable params
 
-### Training results
+### Training
 
 Results using this configuration:
 
@@ -84,3 +73,11 @@ trainer:
 <p align="center">
   <img src="assets/loss.jpg" width="70%" />
 </p>
+
+### Test
+After training for 100 epochs, the results of this gpt are still very random and do not make any sense semantically, however this is just an initial LM that i played with.
+Given the presequence: [Backprppagation is], the decoder generates these outputs:
+- propagation is the andifiedron in
+- propagation is the and deep activation function
+
+Notice how backpropagation is decoded to propagation in the outputs, most likely because the gpt2 encoder does not contain the word [backpropagation].

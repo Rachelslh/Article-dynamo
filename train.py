@@ -24,7 +24,7 @@ model = TransformerDecoder(num_tokens=train_dataset.vocab_size, **config['model'
 trainer = lightning.Trainer(**config['trainer'])
 trainer.fit(model=model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
  
-sequences = model.generate(torch.tensor(train_dataset.encoding.encode('Hi Racha, '), device=config.model.device).repeat(2, 1), 5, 4, device=config.model.device)
+sequences = model.generate(torch.tensor(train_dataset.encoding.encode('Backpropagation is'), device=config.model.device).repeat(2, 1), 5, 4, device=config.model.device)
 print(list(train_dataset.encoding.decode(l) for l in sequences.tolist()))
 
 num_samples = config['data']['train']['max_samples']
