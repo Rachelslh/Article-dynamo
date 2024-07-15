@@ -7,15 +7,17 @@ import numpy as np
 torch.manual_seed(32)
 
 class TransformerDecoder(LightningModule):
-    def __init__(self, num_tokens: int, embedding_dim: int, block_size: int, heads: int, head_size: int, **kwargs) -> None:
+    def __init__(self, num_tokens: int, embedding_dim: int, block_size: int, n_layers: int, heads: int, head_size: int, **kwargs) -> None:
         super().__init__()
         self.block_size = block_size
         
         # Model layers
-        self.embedding_table = nn.Embedding(num_tokens, embedding_dim)
-        self.positional_encodings_table = nn.Embedding(block_size, embedding_dim)
-        self.attention_block = MultiHeadAttention(heads, head_size, block_size, embedding_dim)
-        self.feed_forward = FeedForwardNetwork(embedding_dim, embedding_dim*4)
+        self.transformer = nn.ModuleDict(dict(
+            embedding_table = nn.Embedding(num_tokens, embedding_dim),
+            positional_encodings_table = nn.Embedding(block_size, embedding_dim),
+            blocks = nn.ModuleList(TransformerLayer(heads, head_size, block_size, embedding_dim) for _ in range(n_layers))
+        ))
+        
         self.lm_head = nn.Linear(embedding_dim, num_tokens)
         
         self.loss_func = nn.CrossEntropyLoss()
@@ -28,23 +30,22 @@ class TransformerDecoder(LightningModule):
         B, T = tokens.shape
         #TODO add constraint T <= block size
         # tokens is of shape [B, T], targets shape [B, T]
-        emb_input = self.embedding_table(tokens) # [B, T, emb_d]
+        emb_input = self.transformer.embedding_table(tokens) # [B, T, emb_d]
         # Add positional encoding
-        pos_emb = self.positional_encodings_table((torch.arange(T, device=self.device))) # [T, emb_d]
+        pos_emb = self.transformer.positional_encodings_table((torch.arange(T, device=self.device))) # [T, emb_d]
         emb_input += pos_emb
-        
-        att_output = self.attention_block(emb_input)
-        ffwd_output = self.feed_forward(att_output)
+        for layer in self.transformer.blocks:
+            out = layer(emb_input)
         
         if targets is not None:
-            logits = self.lm_head(ffwd_output) # [B, T, C=num_tokens]
+            logits = self.lm_head(out) # [B, T, C=num_tokens]
             logits = logits.view(B * T, -1)
             targets = targets.view(B * T,)
             # Apply cross-entropy loss
             loss = self.loss_func(logits, targets)
         else:
             # Return only last time position
-            logits = self.lm_head(ffwd_output[:, [-1], :]) # [B, -1, C=num_tokens]
+            logits = self.lm_head(out[:, [-1], :]) # [B, -1, C=num_tokens]
             loss = None
             
         return logits, loss
@@ -93,6 +94,22 @@ class TransformerDecoder(LightningModule):
             
         return sequence
 
+
+class TransformerLayer(nn.Module):
+    def __init__(self, heads: int, head_size: int, block_size: int, emb_d: int, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.attention_block = MultiHeadAttention(heads, head_size, block_size, emb_d)
+        self.feed_forward = FeedForwardNetwork(emb_d, emb_d*4)
+        self.layer_norm1 = nn.LayerNorm(emb_d, bias=False)
+        self.layer_norm2 = nn.LayerNorm(emb_d, bias=False)
+        
+    def forward(self, inputs):
+        att_output = inputs + self.attention_block(self.layer_norm1(inputs))
+        out = att_output + self.feed_forward(self.layer_norm2(att_output))
+        
+        return out
+    
+    
 class ScaledSelfAttentionHead(nn.Module):
     def __init__(self, head_size: int, block_size: int, emb_d: int, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)

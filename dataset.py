@@ -4,7 +4,7 @@ from torch.utils.data import TensorDataset
 
 
 class TokenDataset(TensorDataset):
-    def __init__(self, path: str, block_size: int, max_samples: int) -> None:
+    def __init__(self, path: str, block_size: int) -> None:
         with open(path, 'r') as f:
             self.raw_data = f.read()
             

@@ -27,7 +27,6 @@ trainer.fit(model=model, train_dataloaders=train_dataloader, val_dataloaders=val
 sequences = model.generate(torch.tensor(train_dataset.encoding.encode('Backpropagation is'), device=config.model.device).repeat(2, 1), 5, 4, device=config.model.device)
 print(list(train_dataset.encoding.decode(l) for l in sequences.tolist()))
 
-num_samples = config['data']['train']['max_samples']
 batch_size = config['dataloader']['batch_size']
 epochs_array = np.arange(1, config['trainer']['max_epochs'] + 1)
 
