@@ -80,4 +80,4 @@ Given the presequence: [Backprppagation is], the decoder generates these outputs
 - propagation is the andifiedron in
 - propagation is the and deep activation function
 
-Notice how backpropagation is decoded to propagation in the outputs, most likely because the gpt2 encoder does not contain the word [backpropagation].
+Notice how the word [Backpropagation] is decoded to [propagation] in the outputs, most likely because the gpt2 encoder does not contain the word [Backpropagation].
