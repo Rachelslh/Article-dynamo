@@ -11,6 +11,7 @@ model:
   heads: 2
   head_size: 50
   block_size: 8
+  device: mps
 
 dataloader:
   batch_size: 2

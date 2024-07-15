@@ -7,7 +7,7 @@ import numpy as np
 torch.manual_seed(32)
 
 class TransformerDecoder(LightningModule):
-    def __init__(self, num_tokens: int, embedding_dim: int, block_size: int, heads: int, head_size: int) -> None:
+    def __init__(self, num_tokens: int, embedding_dim: int, block_size: int, heads: int, head_size: int, **kwargs) -> None:
         super().__init__()
         self.block_size = block_size
         
@@ -30,21 +30,22 @@ class TransformerDecoder(LightningModule):
         # tokens is of shape [B, T], targets shape [B, T]
         emb_input = self.embedding_table(tokens) # [B, T, emb_d]
         # Add positional encoding
-        pos_emb = self.positional_encodings_table((torch.arange(self.block_size, device='mps'))) # [T, emb_d]
+        pos_emb = self.positional_encodings_table((torch.arange(T, device=self.device))) # [T, emb_d]
         emb_input += pos_emb
         
         att_output = self.attention_block(emb_input)
         ffwd_output = self.feed_forward(att_output)
         
-        logits = self.lm_head(ffwd_output) # [B, T, C=num_tokens]
         if targets is not None:
+            logits = self.lm_head(ffwd_output) # [B, T, C=num_tokens]
             logits = logits.view(B * T, -1)
             targets = targets.view(B * T,)
             # Apply cross-entropy loss
             loss = self.loss_func(logits, targets)
         else:
             # Return only last time position
-            logits = logits[:, [-1], :]
+            logits = self.lm_head(ffwd_output[:, [-1], :]) # [B, -1, C=num_tokens]
+            loss = None
             
         return logits, loss
     
@@ -77,12 +78,20 @@ class TransformerDecoder(LightningModule):
         return optimizer
     
     @torch.no_grad()
-    def generate(self, pre_sequence, max_new_tokens, topk):
+    def generate(self, sequence, max_new_tokens, top_k, device):
+        self.to(device)
+        self.eval()
         for _ in range(max_new_tokens):
-            pre_sequence = pre_sequence if pre_sequence.size(1) <= self.block_size else pre_sequence[:, -self.block_size:]
-            logits, _ = self(pre_sequence)
-            #TODO Add topK, softmax, appending new token to sequence
+            sequence = sequence if sequence.size(1) <= self.block_size else sequence[:, -self.block_size:]
+            logits, _ = self(sequence)
+            logits = logits[:, -1, :]
+            values, _ = torch.topk(logits, min(top_k, logits.size(-1)))
+            logits[logits < values[:, [-1]]] = float('-inf')
+            probs = softmax(logits, -1)
+            next_token = torch.multinomial(probs, num_samples=1)
+            sequence = torch.cat((sequence, next_token), dim=1)
             
+        return sequence
 
 class ScaledSelfAttentionHead(nn.Module):
     def __init__(self, head_size: int, block_size: int, emb_d: int, *args, **kwargs) -> None:
@@ -96,6 +105,7 @@ class ScaledSelfAttentionHead(nn.Module):
         self.value = nn.Linear(emb_d, self.head_size)
     
     def forward(self, inputs):
+        B, T, C = inputs.shape
         # B, T, emb_d = inputs.shape
         k = self.key(inputs)   # [B, T, head_size]
         q = self.query(inputs) # [B, T, head_size]
@@ -103,7 +113,7 @@ class ScaledSelfAttentionHead(nn.Module):
         
         weights = q @ k.transpose(-2, -1) * self.head_size**-0.5 # [B, T, head_size] * [B, T, head_Size] -> [B, T, head_size] * [B, head_Size, T] = [B, T, T]
         
-        weights = weights.masked_fill((self.tril == 0), float('-inf'))
+        weights = weights.masked_fill((self.tril[:T, :T] == 0), float('-inf'))
         weights = softmax(weights, dim=1)
         input_w_past_attention = weights @ v # [B, T, T] * [B, T, head_size] = [B, T, head_size]
         
