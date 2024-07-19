@@ -14,7 +14,7 @@ from model import TransformerDecoder
 config = OmegaConf.load("config/config.yaml")
 
 block_size = config.model.block_size
-train_dataset = TokenDataset(**config.data.val, block_size=block_size)
+train_dataset = TokenDataset(**config.data.train, block_size=block_size)
 val_dataset = TokenDataset(**config.data.val, block_size=block_size)
 
 train_dataloader = DataLoader(train_dataset, **config.dataloader)
